@@ -19,12 +19,13 @@ console.log(data);
 @import './assets/base.scss';
 
 #app {
-  min-height: 100%;
+  height: 100%;
   display: grid;
   grid-template-rows: auto 1fr;
 }
 
 .main {
   padding: 1.5rem 1rem 0;
+  overflow: auto;
 }
 </style>
