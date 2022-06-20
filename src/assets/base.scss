@@ -46,11 +46,10 @@
 
 html {
   height: 100%;
-  font-size: 62.5%;
 }
 
 body {
-  min-height: 100%;
+  height: 100%;
   color: var(--color-text);
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
@@ -80,6 +79,15 @@ input,
 button {
   font: inherit;
   color: inherit;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 img {
