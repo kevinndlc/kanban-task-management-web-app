@@ -5,7 +5,7 @@ import type { BoardIntf } from '@/interfaces';
 interface KanbanState {
   boards: BoardIntf[];
   selectedBoard: BoardIntf | null;
-  isMobileMenuOpen: boolean;
+  isSidebarOpen: boolean;
 }
 
 export const useKanban = defineStore({
@@ -13,7 +13,7 @@ export const useKanban = defineStore({
   state: (): KanbanState => ({
     boards: [],
     selectedBoard: null,
-    isMobileMenuOpen: false
+    isSidebarOpen: false,
   }),
   getters: {},
   actions: {

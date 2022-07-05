@@ -4,6 +4,11 @@ import BoardIcon from './icons/BoardIcon.vue';
 import LightThemeIcon from './icons/LightThemeIcon.vue';
 import DarkThemeIcon from './icons/DarkThemeIcon.vue';
 import { useDark, useToggle } from '@vueuse/core';
+import HideSidebarIcon from './icons/HideSidebarIcon.vue';
+
+defineProps<{
+  isMobile?: boolean;
+}>();
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -12,13 +17,18 @@ const kanbanStore = useKanban();
 </script>
 
 <template>
-  <nav class="sidebar">
+  <nav v-if="kanbanStore.isSidebarOpen" class="sidebar" :class="isMobile && 'sidebar--mobile'">
     <h2 class="sidebar__title">All Boards ({{ kanbanStore.boards.length }})</h2>
     <ul class="board-list">
       <li
         v-for="board in kanbanStore.boards"
         :key="board.name"
-        @click="kanbanStore.selectedBoard = board"
+        @click="
+          () => {
+            kanbanStore.selectedBoard = board;
+            kanbanStore.isSidebarOpen = false;
+          }
+        "
         class="board-item"
         :class="kanbanStore.selectedBoard === board && 'active'"
       >
@@ -32,24 +42,50 @@ const kanbanStore = useKanban();
     </ul>
     <div class="theme-toggle-wrapper">
       <LightThemeIcon class="light-theme-icon" />
-      <input type="checkbox" id="theme" :checked="isDark" @change="toggleDark()" />
+      <input
+        type="checkbox"
+        id="theme"
+        :checked="isDark"
+        @change="toggleDark()"
+      />
       <label for="theme" aria-label="Light Mode" />
       <DarkThemeIcon class="dark-theme-icon" />
     </div>
+    <button class="hide-sidebar-btn" @click="kanbanStore.isSidebarOpen = false;">
+      <HideSidebarIcon class="hide-sidebar-icon" />
+      <span>Hide Sidebar</span>
+    </button>
   </nav>
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/sass/mixins';
 .sidebar {
-  position: absolute;
   z-index: 99;
-  width: calc(264rem / 16);
+  width: calc(260rem / 16);
   background-color: var(--color-foreground);
-  left: 0;
-  bottom: -2.25rem;
-  transform: translateY(100%);
-  border-radius: 0.5rem;
-  box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
+  border-right: 1px solid var(--color-border);
+  display: none;
+
+  @include mixins.md {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &--mobile {
+    display: revert;
+    width: calc(264rem / 16);
+    position: absolute;
+    transform: translateY(100%);
+    left: 0;
+    bottom: -2.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
+
+    @include mixins.md {
+      display: none;
+    }
+  }
 
   &__title {
     text-transform: uppercase;
@@ -95,7 +131,7 @@ const kanbanStore = useKanban();
 }
 
 .theme-toggle-wrapper {
-  background-color: var(--color-border);
+  background-color: var(--color-background);
   margin: 1rem;
   border-radius: 6px;
   height: 3rem;
@@ -103,6 +139,7 @@ const kanbanStore = useKanban();
   gap: 1.5rem;
   align-items: center;
   justify-content: center;
+  margin-top: auto;
 
   input[type='checkbox'] {
     display: none;
@@ -137,10 +174,29 @@ const kanbanStore = useKanban();
     width: 18px;
     aspect-ratio: 1;
   }
+}
+.dark-theme-icon {
+  width: 15px;
+  aspect-ratio: 1;
+}
 
-  .dark-theme-icon {
-    width: 15px;
-    aspect-ratio: 1;
+.hide-sidebar-btn {
+  display: none;
+
+  @include mixins.md {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: start;
+    width: max-content;
+    margin-block-end: 2rem;
+    margin-inline-start: 1.5rem;
+    height: 3rem;
   }
+}
+
+.hide-sidebar-icon {
+  width: 18px;
+  height: 16px;
 }
 </style>
