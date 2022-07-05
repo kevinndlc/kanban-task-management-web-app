@@ -21,6 +21,7 @@ defineProps<{
     padding-block: 1.5rem;
     box-shadow: 0px 4px 6px rgba(54, 78, 126, 0.1);
     cursor: pointer;
+    user-select: none;
     transition: transform 0.3s ease-out;
 
     &:hover {

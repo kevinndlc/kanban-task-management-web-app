@@ -11,7 +11,7 @@ export interface BoardColumnIntf {
 export interface TaskIntf {
   title: string;
   description: string;
-  status?: TaskStatus;
+  status: string;
   subtasks: SubtaskIntf[];
 }
 
@@ -19,5 +19,3 @@ export interface SubtaskIntf {
   title: string;
   isCompleted: boolean;
 }
-
-type TaskStatus = 'Todo' | 'Doing' | 'Done'

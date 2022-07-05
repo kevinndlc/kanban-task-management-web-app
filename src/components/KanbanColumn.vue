@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BoardColumnIntf } from '@/interfaces';
-import TaskCard from './icons/TaskCard.vue';
+import TaskCard from './TaskCard.vue';
 
 defineProps<{
   column: BoardColumnIntf
