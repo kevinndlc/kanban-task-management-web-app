@@ -1,8 +1,10 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import { useDark } from '@vueuse/core';
 import data from '@/assets/data.json';
 import type { BoardIntf } from '@/interfaces';
 
 interface KanbanState {
+  isDark: any;
   boards: BoardIntf[];
   selectedBoard: BoardIntf | null;
   isSidebarOpen: boolean;
@@ -11,6 +13,7 @@ interface KanbanState {
 export const useKanban = defineStore({
   id: 'kanban',
   state: (): KanbanState => ({
+    isDark: useDark(),
     boards: [],
     selectedBoard: null,
     isSidebarOpen: false,

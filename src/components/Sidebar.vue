@@ -3,21 +3,22 @@ import { useKanban } from '@/stores/kanban';
 import BoardIcon from './icons/BoardIcon.vue';
 import LightThemeIcon from './icons/LightThemeIcon.vue';
 import DarkThemeIcon from './icons/DarkThemeIcon.vue';
-import { useDark, useToggle } from '@vueuse/core';
+import { useToggle } from '@vueuse/core';
 import HideSidebarIcon from './icons/HideSidebarIcon.vue';
 
 defineProps<{
   isMobile?: boolean;
 }>();
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
-
 const kanbanStore = useKanban();
 </script>
 
 <template>
-  <nav v-if="kanbanStore.isSidebarOpen" class="sidebar" :class="isMobile && 'sidebar--mobile'">
+  <nav
+    v-if="kanbanStore.isSidebarOpen"
+    class="sidebar"
+    :class="isMobile && 'sidebar--mobile'"
+  >
     <h2 class="sidebar__title">All Boards ({{ kanbanStore.boards.length }})</h2>
     <ul class="board-list">
       <li
@@ -26,7 +27,9 @@ const kanbanStore = useKanban();
         @click="
           () => {
             kanbanStore.selectedBoard = board;
-            kanbanStore.isSidebarOpen = false;
+            if (isMobile) {
+              kanbanStore.isSidebarOpen = false;
+            }
           }
         "
         class="board-item"
@@ -45,13 +48,13 @@ const kanbanStore = useKanban();
       <input
         type="checkbox"
         id="theme"
-        :checked="isDark"
-        @change="toggleDark()"
+        :checked="kanbanStore.isDark"
+        @change="kanbanStore.isDark = !kanbanStore.isDark"
       />
       <label for="theme" aria-label="Light Mode" />
       <DarkThemeIcon class="dark-theme-icon" />
     </div>
-    <button class="hide-sidebar-btn" @click="kanbanStore.isSidebarOpen = false;">
+    <button class="hide-sidebar-btn" @click="kanbanStore.isSidebarOpen = false">
       <HideSidebarIcon class="hide-sidebar-icon" />
       <span>Hide Sidebar</span>
     </button>

@@ -3,18 +3,15 @@ import TheHeader from './components/TheHeader.vue';
 import KanbanBoard from './components/KanbanBoard.vue';
 import { useKanban } from './stores/kanban';
 import { onMounted, watchEffect } from 'vue';
-import { useDark, useBreakpoints  } from '@vueuse/core';
+import { breakpoints } from './utils/breakpoints';
 import Sidebar from './components/Sidebar.vue';
 import ShowSidebarIcon from './components/icons/ShowSidebarIcon.vue';
+import logoDark from './assets/images/logo-dark.svg';
+import logoLight from './assets/images/logo-light.svg';
 
-useDark();
 const kanbanStore = useKanban();
 
-const breakpoints = useBreakpoints({
-  md: '35rem'
-})
-
-const isLargerThanMobile = breakpoints.greater('md')
+const isLargerThanMobile = breakpoints.greater('md');
 
 watchEffect(() => {
   if (isLargerThanMobile.value) {
@@ -22,7 +19,7 @@ watchEffect(() => {
   } else {
     kanbanStore.isSidebarOpen = false;
   }
-})
+});
 
 onMounted(() => {
   kanbanStore.fetchData();
@@ -30,20 +27,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <TheHeader class="header" />
-  <Sidebar class="sidebar" />
-
-  <button v-if="!kanbanStore.isSidebarOpen" class="open-sidebar" @click="kanbanStore.isSidebarOpen = true">
-    <ShowSidebarIcon />
-    <span class="sr-only">Open Sidebar</span>
-  </button>
-
-  <main class="main">
-    <KanbanBoard
-      v-if="kanbanStore.selectedBoard"
-      :board="kanbanStore.selectedBoard"
-    />
-  </main>
+  <div class="layout" :class="!kanbanStore.isSidebarOpen && 'no-sidebar'">
+    <TheHeader class="header" />
+    <div class="logo">
+      <img v-if="kanbanStore.isDark" :src="logoLight" alt="Logo" />
+      <img v-else :src="logoDark" alt="Logo" />
+    </div>
+    <Sidebar class="sidebar" />
+    <button
+      v-if="!kanbanStore.isSidebarOpen"
+      class="open-sidebar"
+      @click="kanbanStore.isSidebarOpen = true"
+    >
+      <ShowSidebarIcon />
+      <span class="sr-only">Open Sidebar</span>
+    </button>
+    <main class="main">
+      <KanbanBoard
+        v-if="kanbanStore.selectedBoard"
+        :board="kanbanStore.selectedBoard"
+      />
+    </main>
+  </div>
 </template>
 
 <style lang="scss">
@@ -52,16 +57,47 @@ onMounted(() => {
 
 #app {
   height: 100%;
+}
+
+.layout {
+  height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto calc(100% - 4rem);
   grid-template-columns: auto 1fr;
   grid-template-areas:
-    'sidebar header'
+    'logo header'
     'sidebar main';
+
+  @include mixins.md {
+    grid-template-rows: auto calc(100% - 5rem);
+  }
+
+  &.no-sidebar {
+    grid-template-areas:
+      'logo header'
+      'main main';
+
+    .logo {
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
 }
 
 .header {
   grid-area: header;
+}
+
+.logo {
+  grid-area: logo;
+  display: none;
+  align-items: center;
+  padding-inline: 1.625rem;
+  background-color: var(--color-foreground);
+  border-right: 1px solid var(--color-border);
+
+  @include mixins.md {
+    display: flex;
+  }
 }
 
 .sidebar {
@@ -94,5 +130,15 @@ onMounted(() => {
   @include mixins.md {
     display: flex;
   }
+}
+
+::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-accent);
+  border-radius: 100vmax;
 }
 </style>
