@@ -11,10 +11,10 @@ import logoLight from './assets/images/logo-light.svg';
 
 const kanbanStore = useKanban();
 
-const isLargerThanMobile = breakpoints.greater('md');
+const isMobile = breakpoints.smaller('md');
 
 watchEffect(() => {
-  if (isLargerThanMobile.value) {
+  if (!isMobile.value) {
     kanbanStore.isSidebarOpen = true;
   } else {
     kanbanStore.isSidebarOpen = false;
@@ -46,6 +46,11 @@ onMounted(() => {
       <KanbanBoard
         v-if="kanbanStore.selectedBoard"
         :board="kanbanStore.selectedBoard"
+      />
+      <div
+        v-if="kanbanStore.isSidebarOpen && isMobile"
+        class="backdrop"
+        @click="kanbanStore.isSidebarOpen = false"
       />
     </main>
   </div>
@@ -106,6 +111,7 @@ onMounted(() => {
 
 .main {
   grid-area: main;
+  position: relative;
 }
 
 .open-sidebar {
@@ -130,6 +136,12 @@ onMounted(() => {
   @include mixins.md {
     display: flex;
   }
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.5);
 }
 
 ::-webkit-scrollbar {

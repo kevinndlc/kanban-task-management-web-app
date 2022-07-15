@@ -3,13 +3,10 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
 import KanbanColumn from '@/components/KanbanColumn.vue';
 import type { BoardIntf } from '@/interfaces';
 import { useKanban } from '@/stores/kanban';
-import { breakpoints } from '@/utils/breakpoints';
 
 defineProps<{
   board: BoardIntf;
 }>();
-
-const isMobile = breakpoints.smaller('md');
 
 const kanbanStore = useKanban();
 </script>
@@ -27,26 +24,16 @@ const kanbanStore = useKanban();
         :column="column"
       />
     </div>
-    <div
-      v-if="kanbanStore.isSidebarOpen && isMobile"
-      class="backdrop"
-      @click="kanbanStore.isSidebarOpen = false"
-    />
   </div>
 </template>
 
 <style scoped lang="scss">
 .board__wrapper {
   position: relative;
-  padding: 1.5rem 1rem 0;
+  padding: 1.5rem 1rem 3rem;
   overflow: auto;
   height: 100%;
   width: 100%;
-}
-.backdrop {
-  position: absolute;
-  inset: 0;
-  background-color: rgb(0 0 0 / 0.5);
 }
 
 .board__no-column {
