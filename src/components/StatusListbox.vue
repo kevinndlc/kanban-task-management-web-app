@@ -6,17 +6,19 @@ import {
   ListboxOptions,
   ListboxOption,
 } from '@headlessui/vue';
+import { useKanban } from '@/stores/kanban';
 
 const props = defineProps<{
-  current: string;
+  current?: string;
 }>()
 
 const emit = defineEmits<{
   (e: 'changeStatus', newStatus: string): void;
 }>()
 
-const statusList = ['Todo', 'Doing', 'Done'];
-const selectedStatus = props.current ?? ref(statusList[0]);
+const kanbanStore = useKanban();
+
+const selectedStatus = props.current ?? kanbanStore.availableStatus[0];
 </script>
 
 <template>
@@ -25,7 +27,7 @@ const selectedStatus = props.current ?? ref(statusList[0]);
       <ListboxButton class="select">{{ selectedStatus }}</ListboxButton>
       <ListboxOptions class="options">
         <ListboxOption
-          v-for="status in statusList"
+          v-for="status in kanbanStore.availableStatus"
           :key="status"
           :value="status"
         >
@@ -71,5 +73,6 @@ const selectedStatus = props.current ?? ref(statusList[0]);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  cursor: pointer;
 }
 </style>

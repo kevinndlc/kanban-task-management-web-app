@@ -6,7 +6,7 @@ import ChevronUpIcon from './icons/ChevronUpIcon.vue';
 import Sidebar from './Sidebar.vue';
 import { useKanban } from '@/stores/kanban';
 import Modal from './Modal.vue';
-import { ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import PrimaryButton from './PrimaryButton.vue';
 import CrossIcon from './icons/CrossIcon.vue';
 import StatusListbox from './StatusListbox.vue';
@@ -14,13 +14,19 @@ import StatusListbox from './StatusListbox.vue';
 const kanbanStore = useKanban();
 
 const showModal = ref(false);
-const subtasks = ref(['']);
 
-watch(showModal, () => (subtasks.value = ['']));
+const newTask = reactive({
+  title: '',
+  description: '',
+  subtasks: [''],
+  status: ''
+})
+
+watch(showModal, () => (newTask.subtasks = ['']));
 
 function handleCreateTask(e: Event) {
   e.preventDefault();
-  console.log('TEST');
+  kanbanStore.selectedBoard?.columns.find
 }
 </script>
 
@@ -67,11 +73,12 @@ function handleCreateTask(e: Event) {
       <form class="add-task-form">
         <div>
           <label for="title">Title</label>
-          <input type="text" id="title" placeholder="e.g. Take coffee break" />
+          <input type="text" v-model="newTask.title" id="title" placeholder="e.g. Take coffee break" />
         </div>
         <div>
           <label for="description">Description</label>
           <textarea
+            v-model="newTask.description"
             id="description"
             rows="4"
             placeholder="e.g. It's alaways good to take a break. This 15 minute break will recharge the batteries a little."
@@ -81,16 +88,16 @@ function handleCreateTask(e: Event) {
           <label>Subtasks</label>
           <div class="subtasks">
             <div
-              v-for="(subtask, index) in subtasks"
+              v-for="(subtask, index) in newTask.subtasks"
               :key="index"
               class="subtask"
             >
-              <input type="text" placeholder="e.g. Make coffee" v-model="subtasks[index]" />
+              <input type="text" placeholder="e.g. Make coffee" v-model="newTask.subtasks[index]" />
               <button
                 type="button"
                 @click="
                   () => {
-                    subtasks.splice(index, 1);
+                    newTask.subtasks.splice(index, 1);
                   }
                 "
               >
@@ -101,7 +108,7 @@ function handleCreateTask(e: Event) {
             <PrimaryButton
               color="white"
               type="button"
-              @click="subtasks.push('')"
+              @click="newTask.subtasks.push('')"
               >+ Add New Subtask</PrimaryButton
             >
           </div>
@@ -278,5 +285,9 @@ function handleCreateTask(e: Event) {
       }
     }
   }
+}
+
+#description {
+  resize: none;
 }
 </style>

@@ -18,7 +18,18 @@ export const useKanban = defineStore({
     selectedBoard: null,
     isSidebarOpen: false,
   }),
-  getters: {},
+  getters: {
+    availableStatus(state) {
+      if (state.selectedBoard) {
+        return state.selectedBoard?.columns.reduce((acc: any, curr) => {
+          acc.push(curr.name);
+          return acc;
+        }, []);
+      } else {
+        return [];
+      }
+    },
+  },
   actions: {
     fetchData() {
       this.boards = data.boards;

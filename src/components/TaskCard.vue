@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TaskIntf } from '@/interfaces';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import Modal from './Modal.vue';
 import StatusListbox from './StatusListbox.vue';
 
@@ -46,6 +46,7 @@ const showDetails = ref(false);
           </div>
         </div>
         <div class="task__status">
+          {{ task.status }}
           <label for="status">Current Status</label>
           <StatusListbox :current="task.status" @change-status="(newStatus) => task.status = newStatus" />
         </div>
