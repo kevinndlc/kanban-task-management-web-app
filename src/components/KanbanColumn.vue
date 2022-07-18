@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import type { BoardColumnIntf } from '@/interfaces';
+import { computed } from 'vue';
+import { useKanban } from '@/stores/kanban';
 import TaskCard from './TaskCard.vue';
 
-defineProps<{
-  column: BoardColumnIntf;
+const props = defineProps<{
+  status: string;
 }>();
+
+const kanbanStore = useKanban();
+
+const columnTasks = computed(() => {
+  return kanbanStore.selectedBoard?.tasks.filter(t => t.status === props.status)
+})
 
 const randomColor = `hsl(${Math.floor(Math.random() * 360)}deg, 50%, 50%)`;
 </script>
@@ -14,11 +21,11 @@ const randomColor = `hsl(${Math.floor(Math.random() * 360)}deg, 50%, 50%)`;
     <header class="column__header">
       <div class="column__color" />
       <span class="column__title"
-        >{{ column.name }} ({{ column.tasks.length }})</span
+        >{{ status }} ({{ columnTasks?.length }})</span
       >
     </header>
     <div class="column__tasks">
-      <TaskCard v-for="task of column.tasks" :key="task.title" :task="task" />
+      <TaskCard v-for="task of columnTasks" :key="task.title" :task="task" />
     </div>
   </div>
 </template>

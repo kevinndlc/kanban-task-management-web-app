@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { useDark } from '@vueuse/core';
-import data from '@/assets/data.json';
-import type { BoardIntf } from '@/interfaces';
+import type { BoardIntf, SelectedBoardIntf, SubtaskIntf, TaskIntf } from '@/interfaces';
+import { supabase } from '@/supabase';
 
 interface KanbanState {
   isDark: any;
   boards: BoardIntf[];
-  selectedBoard: BoardIntf | null;
+  tasks: TaskIntf[];
+  subtasks: SubtaskIntf[];
+  selectedBoardId: number | null;
   isSidebarOpen: boolean;
 }
 
@@ -15,14 +17,39 @@ export const useKanban = defineStore({
   state: (): KanbanState => ({
     isDark: useDark(),
     boards: [],
-    selectedBoard: null,
+    tasks: [],
+    subtasks: [],
+    selectedBoardId: null,
     isSidebarOpen: false,
   }),
   getters: {
-    availableStatus(state) {
-      if (state.selectedBoard) {
-        return state.selectedBoard?.columns.reduce((acc: any, curr) => {
-          acc.push(curr.name);
+    selectedBoard(state): SelectedBoardIntf | null {
+      if (this.selectedBoardId) {
+        const boardDetails = state.boards.find(
+          (b) => b.id === this.selectedBoardId
+        )!;
+        const boardTasks = state.tasks
+          .filter((t) => t.board_id === this.selectedBoardId)
+          .map((t) => ({
+            ...t,
+            subtasks: state.subtasks.filter((st) => st.task_id === t.id),
+          }));
+
+        return {
+          id: boardDetails.id,
+          name: boardDetails.name,
+          tasks: boardTasks,
+        };
+      } else {
+        return null;
+      }
+    },
+    availableStatus() {
+      if (this.selectedBoard) {
+        return this.selectedBoard.tasks.reduce((acc, task) => {
+          if (!acc.includes(task.status)) {
+            acc.push(task.status)
+          }
           return acc;
         }, []);
       } else {
@@ -31,11 +58,18 @@ export const useKanban = defineStore({
     },
   },
   actions: {
-    fetchData() {
-      this.boards = data.boards;
+    async fetchData() {
+      const boardResponse: any = await supabase.from('board').select('*');
+      this.boards = boardResponse.data;
+
+      const taskResponse: any = await supabase.from('task').select('*');
+      this.tasks = taskResponse.data;
+
+      const subtaskResponse: any = await supabase.from('subtask').select('*');
+      this.subtasks = subtaskResponse.data;
 
       if (this.boards.length) {
-        this.selectedBoard = this.boards[0];
+        this.selectedBoardId = this.boards[0].id;
       }
     },
   },

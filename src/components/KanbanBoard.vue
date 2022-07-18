@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import KanbanColumn from '@/components/KanbanColumn.vue';
-import type { BoardIntf } from '@/interfaces';
+import type { SelectedBoardIntf } from '@/interfaces';
 import { useKanban } from '@/stores/kanban';
 
 defineProps<{
-  board: BoardIntf;
+  board: SelectedBoardIntf;
 }>();
 
 const kanbanStore = useKanban();
@@ -13,15 +13,15 @@ const kanbanStore = useKanban();
 
 <template>
   <div class="board__wrapper">
-    <div v-if="board.columns.length === 0" class="board__no-column">
+    <div v-if="!kanbanStore.availableStatus.length" class="board__no-column">
       <p>This Board is empty. Create a new column to get started</p>
       <PrimaryButton>+ Add New Column</PrimaryButton>
     </div>
     <div v-else class="board__columns" :key="kanbanStore.selectedBoard?.name">
       <KanbanColumn
-        v-for="column of board.columns"
-        :key="column.name"
-        :column="column"
+        v-for="status of kanbanStore.availableStatus"
+        :key="status"
+        :status="status"
       />
     </div>
   </div>

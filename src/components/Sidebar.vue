@@ -3,7 +3,6 @@ import { useKanban } from '@/stores/kanban';
 import BoardIcon from './icons/BoardIcon.vue';
 import LightThemeIcon from './icons/LightThemeIcon.vue';
 import DarkThemeIcon from './icons/DarkThemeIcon.vue';
-import { useToggle } from '@vueuse/core';
 import HideSidebarIcon from './icons/HideSidebarIcon.vue';
 
 defineProps<{
@@ -26,14 +25,14 @@ const kanbanStore = useKanban();
         :key="board.name"
         @click="
           () => {
-            kanbanStore.selectedBoard = board;
+            kanbanStore.selectedBoardId = board.id;
             if (isMobile) {
               kanbanStore.isSidebarOpen = false;
             }
           }
         "
         class="board-item"
-        :class="kanbanStore.selectedBoard === board && 'active'"
+        :class="kanbanStore.selectedBoard?.id === board.id && 'active'"
       >
         <BoardIcon class="board-item__icon" />
         <span class="board-item__name">{{ board.name }}</span>

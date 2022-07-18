@@ -1,21 +1,17 @@
+import type { SubtaskIntf } from "./Task.interface";
+
 export interface BoardIntf {
+  id: number;
   name: string;
-  columns: BoardColumnIntf[];
 }
 
-export interface BoardColumnIntf {
-  name: string;
-  tasks: TaskIntf[];
-}
-
-export interface TaskIntf {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: SubtaskIntf[];
-}
-
-export interface SubtaskIntf {
-  title: string;
-  isCompleted: boolean;
+export interface SelectedBoardIntf extends BoardIntf {
+  tasks: {
+    id: number;
+    board_id: number;
+    title: string;
+    description?: string;
+    status: string;
+    subtasks: SubtaskIntf[]
+  }[];
 }

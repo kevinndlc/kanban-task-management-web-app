@@ -5,7 +5,7 @@ import Modal from './Modal.vue';
 import StatusListbox from './StatusListbox.vue';
 
 defineProps<{
-  task: TaskIntf;
+  task: any;
 }>();
 
 const showDetails = ref(false);
@@ -15,7 +15,7 @@ const showDetails = ref(false);
   <div class="task" @click="showDetails = true">
     <h2 class="task__title">{{ task.title }}</h2>
     <span class="task__subtask-count"
-      >{{ task.subtasks.filter((st) => st.isCompleted).length }} of
+      >{{ task.subtasks.filter((st: any) => st.is_completed).length }} of
       {{ task.subtasks.length }} subtasks</span
     >
     <Modal
@@ -28,7 +28,7 @@ const showDetails = ref(false);
       </p>
       <div class="task__subtasks-container">
         <h3>
-          Subtasks ({{ task.subtasks.filter((st) => st.isCompleted).length }} of
+          Subtasks ({{ task.subtasks.filter((st: any) => st.is_completed).length }} of
           {{ task.subtasks.length }})
         </h3>
         <div class="subtasks">
@@ -40,7 +40,7 @@ const showDetails = ref(false);
             <input
               type="checkbox"
               :id="`subtask_${index + 1}`"
-              v-model="subtask.isCompleted"
+              v-model="subtask.is_completed"
             />
             <label :for="`subtask_${index + 1}`">{{ subtask.title }}</label>
           </div>

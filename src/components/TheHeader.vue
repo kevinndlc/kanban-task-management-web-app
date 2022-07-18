@@ -26,7 +26,6 @@ watch(showModal, () => (newTask.subtasks = ['']));
 
 function handleCreateTask(e: Event) {
   e.preventDefault();
-  kanbanStore.selectedBoard?.columns.find
 }
 </script>
 
@@ -59,7 +58,7 @@ function handleCreateTask(e: Event) {
     <div class="header__actions">
       <button
         class="header__add-task-btn"
-        :disabled="kanbanStore.selectedBoard?.columns.length === 0"
+        :disabled="!kanbanStore.availableStatus.length"
         @click="showModal = true"
       >
         <PlusIcon class="header__add-task-icon" />
@@ -187,6 +186,11 @@ function handleCreateTask(e: Event) {
     width: 3rem;
     border-radius: 100vmax;
     color: var(--color-white);
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: default;
+    }
 
     @include mixins.md {
       width: auto;

@@ -21,8 +21,8 @@ watchEffect(() => {
   }
 });
 
-onMounted(() => {
-  kanbanStore.fetchData();
+onMounted(async () => {
+  await kanbanStore.fetchData();
 });
 </script>
 
